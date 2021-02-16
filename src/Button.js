@@ -52,8 +52,6 @@ class Button extends Component
         break;
     }
     
-    console.log(this.props.active, this.props.active == "true");
-    
     if (this.props.active == "true") {
       buttonProps.class += ' active';
     }
@@ -67,7 +65,6 @@ class Button extends Component
     }
     
     // Render component
-    const button = h("button", buttonProps, buttonContent ? buttonContent : this.props.children);
-    return html`${button}`;
+    return h("button", buttonProps, buttonContent ? buttonContent : this.props.children);
   }
 };
