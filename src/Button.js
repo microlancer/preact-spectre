@@ -5,23 +5,69 @@
 class Button extends Component
 {
   render() {
-    console.log("Button::render()");
-    let params = this.props.params;
-
-    // Seperate parameters not directly applied to button
-    let pending = params.pending;
-    delete params.pending;
-
-    // Set default classes if none are set. Check if button is in loading state.
-    params.class = params.classes || "btn btn-primary";
-
-    if (pending != undefined && pending) {
-      params.class += " loading";
+    let buttonProps = {};
+    
+    switch (this.props.kind) {
+      case 'secondary': 
+        buttonProps.class = 'btn btn-secondary';
+        break;
+      case 'link': 
+        buttonProps.class = 'btn btn-link';
+        break;
+      case 'success':
+        buttonProps.class = 'btn btn-success';
+        break;
+      case 'error':
+        buttonProps.class = 'btn btn-error';
+        break;
+      default:
+        buttonProps.class = 'btn btn-primary';
     }
     
-    delete params.classes;
-
+    switch (this.props.size) {
+      case 'small':
+        buttonProps.class += ' btn-sm';
+        break;
+      case 'large':
+        buttonProps.class += ' btn-lg';
+        break;
+      default:
+    }
+    
+    switch (this.props.shape) {
+      case 'square':
+        buttonProps.class += ' btn-action';
+        break;
+      case 'circle':
+        buttonProps.class += ' btn-action s-circle';
+        break;
+      default:
+    }
+    
+    let buttonContent = false;
+    
+    switch (this.props.icon) {
+      case 'menu':
+        buttonContent = html`<i class="icon icon-menu"></i>`;
+        break;
+    }
+    
+    console.log(this.props.active, this.props.active == "true");
+    
+    if (this.props.active == "true") {
+      buttonProps.class += ' active';
+    }
+    
+    if (this.props.disabled == "true") {
+      buttonProps.class += ' disabled';
+    }
+    
+    if (this.props.loading == "true") {
+      buttonProps.class += ' loading';
+    }
+    
     // Render component
-    return h("button", params, this.props.children);
+    const button = h("button", buttonProps, buttonContent ? buttonContent : this.props.children);
+    return html`${button}`;
   }
-}
+};

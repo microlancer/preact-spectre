@@ -1,0 +1,124 @@
+<html lang='en'>
+<head>
+<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+<link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+</head>
+<body style='background-color:lightgray;padding:20px'>
+<h1>Component Usage Examples</h1>
+<div id='main'></div>
+<script src="https://cdn.jsdelivr.net/npm/preact@10.5.12/dist/preact.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.0.4/dist/htm.min.js"></script>
+<script>
+const { h, render, Component } = window.preact;
+const htm = window.htm;
+const html = htm.bind(h);
+const RawHTML = ({children, className = ""}) => html`
+<div style="display:inline" className=${className}
+  dangerouslySetInnerHTML=${{ __html: children}} />`;
+
+function partial(func, ...argsBound) {
+  return function(...args) { // (*)
+    return func.call(this, ...argsBound, ...args);
+  };
+}
+String.prototype.toHtmlEntities = function() {
+    return this.replace(/./gm, function(s) {
+        // return "&#" + s.charCodeAt(0) + ";";
+        return (s.match(/[a-z0-9\s]+/i)) ? s : "&#" + s.charCodeAt(0) + ";";
+    });
+};
+</script>
+<script src="src/Button.js"></script>
+<script>
+class App extends Component
+{
+  render() {
+    
+    const examples = [
+      {
+        html: html`<${Button}>Default<//>`,
+        code: '<${Button}>Default<//>'
+      },
+      {
+        html: html`<${Button} kind="secondary">Secondary<//>`,
+        code: '<${Button} kind="secondary">Secondary<//>'
+      },
+      {
+        html: html`<${Button} kind="link">Secondary<//>`,
+        code: '<${Button} kind="link">Secondary<//>'
+      },
+      {
+        html: html`<${Button} kind="success">Success<//>`,
+        code: '<${Button} kind="success">Success<//>'
+      },
+      {
+        html: html`<${Button} kind="error">Error<//>`,
+        code: '<${Button} kind="error">Error<//>'
+      },
+      {
+        html: html`<${Button} size="small">Small<//>`,
+        code: '<${Button} size="small">Small<//>'
+      },
+      {
+        html: html`<${Button} size="large">Large<//>`,
+        code: '<${Button} size="large">Large<//>'
+      },
+      {
+        html: html`<${Button} shape="square">S<//> (Square Button)`,
+        code: '<${Button} shape="square">S<//>'
+      },
+      {
+        html: html`<${Button} shape="circle">C<//> (Circle Button)`,
+        code: '<${Button} shape="circle">C<//>'
+      },
+      {
+        html: html`<${Button} shape="square" icon="menu"><//> (Menu Button)`,
+        code: '<${Button} shape="square" icon="menu"><//>'
+      },
+      {
+        html: html`<${Button} active=true>Active<//> <${Button}>Default<//>`,
+        code: '<${Button} active=true>Active<//>\n\<${Button}>Default<//>'
+      },
+      {
+        html: html`<${Button} disabled=true>Disabled<//>`,
+        code: '<${Button} disabled=true>Disabled<//>'
+      },
+      {
+        html: html`<${Button} loading=true>Loading<//>`,
+        code: '<${Button} loading=true>Loading<//>'
+      }
+    ];
+    
+    let exampleHtml = [];
+    
+    for (let i=0; i<examples.length; i++) {
+      const plainText = examples[i].code;
+      const rendered = examples[i].html;
+      const plainTextEncoded = html`<${RawHTML}>${plainText.toHtmlEntities()}<//>`;
+      const rowHtml = html`<div style='display:table-row'>
+        <div style='display:table-cell;width:50%;padding:10px'>
+        ${rendered}
+        </div>
+        <div style='display:table-cell;width:50%'>
+        <pre style='font-weight:bold'>
+        ${plainTextEncoded}
+        </pre>
+        </div>
+        </div>
+        `;
+      exampleHtml.push(rowHtml);
+    }
+    
+    return html`<div id='app' style='width:100%'>
+        <h2>Buttons</h2>
+        <div style='display:table;width:100%'>
+        ${exampleHtml}
+        </div>
+        </div>`;
+  }
+};
+render(html`<${App} />`, document.getElementById('main'));
+</script>
+</body>
+</html>
